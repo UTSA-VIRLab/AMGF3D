@@ -2,6 +2,8 @@
 
 **News: our paper is accepted at BMVC 2026.**
 
+Faisal Ahmed, John Quarles, Kevin Desai — Department of Computer Science, University of Texas at San Antonio
+
 This repository contains the implementation of **AMGF3D**, a selective RGB-D fusion module for
 sparse-voxel indoor 3D object detectors. Projection-based fusion normally ties every 3D location to a
 single, fixed-scale 2D descriptor and injects it unconditionally. AMGF3D instead
@@ -187,11 +189,10 @@ Ground truth, additive fusion, and AMGF3D on ARKitScenes, SUN RGB-D and ScanNet:
 
 If you find this work useful, please consider citing:
 
-<!-- TODO: fill in the author list exactly as it appears on the camera-ready. -->
 ```
-@inproceedings{amgf3d2026,
+@inproceedings{ahmed2026amgf3d,
   title     = {AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection},
-  author    = {TODO},
+  author    = {Ahmed, Faisal and Quarles, John and Desai, Kevin},
   booktitle = {Proceedings of the British Machine Vision Conference (BMVC)},
   year      = {2026}
 }
