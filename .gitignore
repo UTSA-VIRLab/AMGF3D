@@ -1,0 +1,31 @@
+# byte-compiled
+__pycache__/
+*.py[cod]
+*.so
+
+# packaging / build
+build/
+dist/
+*.egg-info/
+.mim/
+
+# datasets, checkpoints, results -- never committed
+data/*
+!data/scannet/
+!data/sunrgbd/
+data/scannet/scans*/
+data/scannet/points/
+data/scannet/posed_images/
+data/scannet/*.pkl
+work_dirs/
+checkpoints/
+*.pth
+*.pkl
+results/
+vis_exports*/
+
+# logs and scratch
+*.log
+*.nohup
+.vscode/
+.idea/
