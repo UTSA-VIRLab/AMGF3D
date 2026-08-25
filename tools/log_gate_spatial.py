@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """log_gate_spatial.py — one-scene voxel-level gate dump for Fig 4.
 
-Runs AMCGF3D forward on a single val sample and saves per-voxel (xyz, gate_early).
+Runs AMGF3D forward on a single val sample and saves per-voxel (xyz, gate_early).
 Captures coords from the SparseTensor output of backbone.layer1 and the gate
 output from fusion_early.gate; both fire in voxel-order so they pair 1-to-1.
 
@@ -10,7 +10,7 @@ Usage:
       --config configs/.../sunrgbd.py \
       --checkpoint work_dirs/.../latest.pth \
       --img-id 4594 \
-      --output Paper_Submission_and_Reviews/revision_artifacts/figure_assets/gate_spatial/sunrgbd_4594.npz
+      --output results/gate_spatial/sunrgbd_4594.npz
 """
 
 import argparse

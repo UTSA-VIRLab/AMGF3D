@@ -1,7 +1,7 @@
 """Robustness perturbation transforms for Step 7 of the ACCV revision plan.
 
 These transforms degrade one modality at eval time to measure how much
-AMCGF3D vs TR3D+FF rely on each. They register into mmdet3d's PIPELINES
+AMGF3D vs TR3D+FF rely on each. They register into mmdet3d's PIPELINES
 registry when this module is imported.
 
 NOTE: this file is intentionally side-effect-isolated. The currently-running

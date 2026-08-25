@@ -13,9 +13,10 @@
 # Higher % retained = more robust. The headline rows use the same representative
 # levels as main-paper Table 4.
 # ============================================================================
-import csv, os
+import csv, os, sys
 
-BASE = "Paper_Submission_and_Reviews/revision_artifacts/robustness_eval"
+BASE = os.environ.get("ROBUSTNESS_DIR",
+                      sys.argv[1] if len(sys.argv) > 1 else "results/robustness_eval")
 SRC  = os.path.join(BASE, "crossmethod_robustness_sun.csv")
 METHODS = ["imvotenet", "tr3d_ff", "amgf3d"]
 PRETTY  = {"imvotenet": "ImVoteNet", "tr3d_ff": "TR3D+FF", "amgf3d": "AMGF3D"}

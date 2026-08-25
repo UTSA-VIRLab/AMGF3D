@@ -8,8 +8,8 @@ as mmdet3d's `indoor_eval`. Used for Fig 3's scene-ranking + caption numbers.
 Usage:
   python tools/per_scene_eval.py \
       --config configs/.../some_config.py \
-      --predictions Paper_Submission_and_Reviews/revision_artifacts/figure_assets/predictions/amcgf3d/sunrgbd.pkl \
-      --output      Paper_Submission_and_Reviews/revision_artifacts/figure_assets/per_scene_stats/amcgf3d_sunrgbd.json \
+      --predictions results/predictions/amgf3d/sunrgbd.pkl \
+      --output      results/per_scene_stats/amgf3d_sunrgbd.json \
       --score-thr 0.3 \
       --iou-thr 0.25
 

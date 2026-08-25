@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """log_gate_distribution.py — Step 8 per-dataset gate analysis.
 
-Loads an AMCGF3D checkpoint, attaches non-invasive forward hooks to
+Loads an AMGF3D checkpoint, attaches non-invasive forward hooks to
 `model.fusion_early.gate` and `model.fusion_late.gate`, runs the val
 dataloader, and writes per-dataset gate-value distribution statistics.
 
 Usage:
   CUDA_VISIBLE_DEVICES=5 python tools/log_gate_distribution.py \
       --config configs/tr3d/ff_crossattn/tr3d-ff_crossattn_dual_sunrgbd.py \
-      --checkpoint work_dirs/seed_runs/amcgf3d_sunrgbd_seed0/latest.pth \
-      --output-dir Paper_Submission_and_Reviews/revision_artifacts/gate_distribution/sunrgbd
+      --checkpoint work_dirs/tr3d-ff_crossattn_dual_sunrgbd/latest.pth \
+      --output-dir results/gate_distribution/sunrgbd
 
 Output: a directory containing
   - gate_hist_early.npy   (1000-bin histogram of fusion_early gate values)

@@ -82,6 +82,23 @@ Configs used for the results in the paper:
 Per-component ablations (single-scale, early-only, late-only, no-gate, geometry-only) live in
 [`configs/tr3d/ff_crossattn/ablations/`](configs/tr3d/ff_crossattn/ablations).
 
+### Where things live
+
+The implementation predates the method's final name, so the paper's terminology and the class names
+differ. The mapping is:
+
+| In the paper | In the code |
+|:---|:---|
+| AMGF3D (the detector) | `TR3DFFCrossAttn3DDetector` in [`mmdet3d/models/detectors/tr3d_ff_crossattn.py`](mmdet3d/models/detectors/tr3d_ff_crossattn.py) |
+| AMGF module (Sec. 3.3) | `MultiScaleFusion` in the same file |
+| adaptive scale weights **α** (Eq. 4) | the `W_beta` → `W_alpha` bottleneck inside `MultiScaleFusion` |
+| feature-conditioned gate *g* (Eq. 5) | the gate head inside `MultiScaleFusion` |
+| TR3D+FF (additive baseline) | `TR3DFF3DDetector` in [`mmdet3d/models/detectors/tr3d_ff.py`](mmdet3d/models/detectors/tr3d_ff.py) |
+| VoteNet+AMGF (Sec. 5.5) | `VoteNetCrossAttn` / `PointWiseMultiScaleFusion` in [`mmdet3d/models/detectors/votenet.py`](mmdet3d/models/detectors/votenet.py) |
+
+`CrossAttentionFusion` in the same file is an earlier fusion variant kept for reference; the configs
+in this repository do not select it.
+
 ### Robustness evaluation
 
 Perturbations are applied at **test time only** — training data and checkpoints are unchanged. They
@@ -93,7 +110,7 @@ and driven by `tools/run_robustness_eval.py`:
 python tools/run_robustness_eval.py \
     --config       configs/tr3d/ff_crossattn/tr3d-ff_crossattn_dual_sunrgbd.py \
     --checkpoint   work_dirs/tr3d-ff_crossattn_dual_sunrgbd/latest.pth \
-    --method       amcgf3d \
+    --method       amgf3d \
     --dataset      sunrgbd \
     --perturbation calibration_rotation \
     --level        3.0 \

@@ -7,10 +7,10 @@ then writes the headline mAP@.25 / mAP@.50 to a CSV row plus a JSON summary.
 Usage:
   CUDA_VISIBLE_DEVICES=5 python tools/run_robustness_eval.py \
       --config configs/tr3d/ff_crossattn/tr3d-ff_crossattn_dual_sunrgbd.py \
-      --checkpoint work_dirs/seed_runs/amcgf3d_sunrgbd_seed0/latest.pth \
-      --method amcgf3d --dataset sunrgbd \
+      --checkpoint work_dirs/tr3d-ff_crossattn_dual_sunrgbd/latest.pth \
+      --method amgf3d --dataset sunrgbd \
       --perturbation points_subsample --level 0.5 \
-      --output-csv Paper_Submission_and_Reviews/revision_artifacts/robustness_eval/results.csv
+      --output-csv results/robustness_eval/results.csv
 
 The perturbation is spliced into the test_pipeline in this process only;
 the on-disk config is not modified.
@@ -95,7 +95,7 @@ def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument('--config', required=True)
     p.add_argument('--checkpoint', required=True)
-    p.add_argument('--method', required=True, help='label only (amcgf3d | tr3d_ff)')
+    p.add_argument('--method', required=True, help='label written to the output CSV (amgf3d | tr3d_ff); must match the labels crossmethod_robustness_stats.py expects')
     p.add_argument('--dataset', required=True, help='label only (sunrgbd | scannet | arkitscenes)')
     p.add_argument('--perturbation', required=True)
     p.add_argument('--level', type=float, required=True)
