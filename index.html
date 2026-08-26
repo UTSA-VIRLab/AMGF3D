@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection</title>
+    <meta name="description" content="AMGF3D (BMVC 2026): a selective RGB-D fusion module for sparse-voxel indoor 3D object detection, with per-voxel multi-scale FPN aggregation and feature-conditioned gating for robustness under input perturbations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #f59e0b;
+            --bg: #ffffff;
+            --bg-alt: #f8fafc;
+            --bg-dark: #0f172a;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --red: #ef4444;
+            --green: #22c55e;
+            --blue: #3b82f6;
+            --max-w: 1100px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            line-height: 1.7;
+            background: var(--bg);
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e293b 100%);
+            color: white;
+            padding: 80px 24px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(37, 99, 235, 0.15) 0%, transparent 70%),
+                        radial-gradient(ellipse at 70% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-content { position: relative; z-index: 1; max-width: var(--max-w); margin: 0 auto; }
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        .hero .venue {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
+        }
+        .hero .subtitle {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            max-width: 750px;
+            margin: 0 auto 32px;
+            font-weight: 400;
+        }
+        .hero .authors {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 28px;
+        }
+        .hero .authors a { color: #93c5fd; text-decoration: none; }
+        .hero .authors a:hover { text-decoration: underline; }
+
+        .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+        }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-outline {
+            background: transparent;
+            color: #e2e8f0;
+            border: 1px solid #475569;
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: #94a3b8; }
+        .btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* ── Sections ── */
+        section { padding: 60px 24px; }
+        .container { max-width: var(--max-w); margin: 0 auto; }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            margin-bottom: 40px;
+            max-width: 760px;
+        }
+
+        /* ── Abstract ── */
+        .abstract {
+            background: var(--bg-alt);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .abstract-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #475569;
+            max-width: 850px;
+            text-align: justify;
+        }
+
+        /* ── Key Idea ── */
+        .key-idea-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 32px;
+            align-items: center;
+        }
+        .key-idea-img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        }
+        .key-idea-text h3 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .key-idea-text p {
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        /* ── Architecture ── */
+        .arch-section { background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .arch-img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            background: white;
+        }
+        .arch-caption {
+            margin-top: 16px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* ── Features ── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: white;
+            transition: box-shadow 0.2s;
+        }
+        .feature-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+        .feature-card h3 { font-size: 1.05rem; margin-bottom: 8px; font-weight: 600; }
+        .feature-card p { color: var(--text-light); font-size: 0.9rem; line-height: 1.6; }
+
+        /* ── Results Table ── */
+        .table-wrap { overflow-x: auto; }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            margin-top: 24px;
+            min-width: 640px;
+        }
+        .results-table thead {
+            background: var(--bg-dark);
+            color: white;
+        }
+        .results-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.82rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+        .results-table th:first-child { border-radius: 8px 0 0 0; }
+        .results-table th:last-child { border-radius: 0 8px 0 0; }
+        .results-table td {
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .results-table tbody tr:hover { background: #f1f5f9; }
+        .results-table .best { font-weight: 700; color: var(--primary); }
+        .results-table .ours td { background: #eff6ff; }
+        .results-table .category-row td {
+            background: #f8fafc;
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 8px 16px;
+        }
+        .table-note {
+            margin-top: 14px;
+            font-size: 0.84rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* ── Method Pipeline ── */
+        .pipeline {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 0;
+            margin: 40px 0 8px;
+            flex-wrap: wrap;
+        }
+        .pipeline-step {
+            text-align: center;
+            padding: 18px 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-width: 150px;
+            flex: 0 1 auto;
+        }
+        .pipeline-step .step-num {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+        .pipeline-step .step-title { font-weight: 600; font-size: 0.93rem; margin-bottom: 4px; }
+        .pipeline-step .step-detail { color: var(--text-light); font-size: 0.79rem; line-height: 1.5; }
+        .pipeline-arrow {
+            display: flex;
+            align-items: center;
+            font-size: 1.4rem;
+            color: var(--text-light);
+            padding: 0 8px;
+        }
+
+        /* ── BibTeX ── */
+        .bibtex-section { background: var(--bg-dark); color: #e2e8f0; }
+        .bibtex-section .section-title { color: white; }
+        .bibtex-section .section-subtitle { color: #94a3b8; }
+        .bibtex-block {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #94a3b8;
+            overflow-x: auto;
+            position: relative;
+            white-space: pre;
+        }
+        .bibtex-block .key { color: #f59e0b; }
+        .bibtex-block .field { color: #22d3ee; }
+        .bibtex-block .value { color: #a5b4fc; }
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #334155;
+            border: none;
+            color: #94a3b8;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .copy-btn:hover { background: #475569; color: white; }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 32px 24px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+        footer a { color: var(--primary); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            section { padding: 40px 16px; }
+            .hero { padding: 64px 16px 48px; }
+            .hero h1 { font-size: 1.9rem; }
+            .hero .subtitle { font-size: 1rem; }
+            .key-idea-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .pipeline { flex-direction: column; align-items: stretch; }
+            .pipeline-arrow { justify-content: center; transform: rotate(90deg); padding: 4px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- back to lab -->
+<a href="https://utsa-virlab.github.io" class="back-link"
+   style="position:fixed;top:16px;left:16px;z-index:1000;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:rgba(0,0,0,0.55);color:#fff;text-decoration:none;font-size:0.85rem;font-weight:500;backdrop-filter:blur(4px);">&larr;&nbsp;VIR Lab</a>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<header class="hero">
+    <div class="hero-content">
+        <div class="venue">BMVC 2026</div>
+        <h1>AMGF3D</h1>
+        <p class="subtitle">
+            Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection
+        </p>
+        <p class="authors">
+            Faisal Ahmed &middot;
+            John Quarles &middot;
+            <a href="https://www.linkedin.com/in/kevinpdesai/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Kevin Desai</a>
+        </p>
+        <p class="authors" style="font-weight:400;font-size:0.9rem;opacity:0.85;">
+            The University of Texas at San Antonio
+        </p>
+        <div class="btn-row">
+            <a href="assets/AMGF3D_BMVC2026.pdf" class="btn btn-primary">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                Paper
+            </a>
+            <a href="https://github.com/UTSA-VIRLab/AMGF3D" class="btn btn-outline">
+                <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                Code
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- ════════════════════ ABSTRACT ════════════════════ -->
+<section class="abstract">
+    <div class="container">
+        <h2 class="section-title">Abstract</h2>
+        <p class="abstract-text">
+            Fully convolutional sparse-voxel detectors are efficient for indoor 3D object detection, but RGB-D detection pipelines can degrade when geometry, appearance, or camera-depth alignment is imperfect. Projection-based 2D-3D fusion can help, yet simple fusion baselines often assume that projected correspondences are reliable and that one fixed image-feature scale is suitable for all object sizes. These assumptions do not hold for indoor scenes with depth discontinuities, occlusion, and large scale variation. We propose Adaptive Multi-scale Gated Fusion (AMGF3D), a selective RGB-D fusion framework for sparse-voxel detectors. AMGF3D aggregates features from a 2D Feature Pyramid Network (P<sub>2</sub>&ndash;P<sub>5</sub>) using per-voxel scale weights conditioned on local 3D context, and uses a lightweight feature-conditioned gate to modulate projected image evidence before injecting it into the 3D stream. Fusion is applied at two backbone stages to combine lower-level appearance detail with higher-level semantic cues while retaining single-pass inference. Beyond clean accuracy, we evaluate robustness under controlled, multi-seed perturbations. On SUN RGB-D and ARKitScenes, AMGF3D is significantly more robust than additive fusion under the two pre-specified primary perturbations, RGB patch dropout and calibration rotation (six matched seeds, with Wilcoxon and 95% CI support), with gains that persist at mAP@0.50. Across all three benchmarks we observe no statistically significant underperformance within the tested suite. In a SUN RGB-D cross-method comparison, it is best or tied-best on the perturbations that meaningfully degrade accuracy. AMGF3D remains competitive on clean ScanNet, SUN RGB-D, and ARKitScenes evaluation, improves most clearly on small objects, and adds +0.6% parameters and a modest ~9% runtime cost over additive fusion.
+        </p>
+    </div>
+</section>
+
+<!-- ════════════════════ KEY CONTRIBUTIONS ════════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">Key Contributions</h2>
+        <p class="section-subtitle">Prior projection-based fusion ties each 3D location to a single, fixed-scale 2D descriptor and injects it unconditionally. AMGF3D removes both assumptions.</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #dbeafe; color: #2563eb;">&#x1F3AF;</div>
+                <h3>Adaptive Multi-scale Gated Fusion</h3>
+                <p>A per-voxel, multi-scale, gated RGB-D fusion module that injects 2D pyramid features into a sparse-voxel backbone at two stages, conditioned on local 3D context.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #fef3c7; color: #d97706;">&#x1F4CA;</div>
+                <h3>Multi-seed Robustness Study</h3>
+                <p>A statistically paired evaluation across three benchmarks &mdash; six matched seeds per dataset, pre-specified primary perturbations, and an exact-Wilcoxon with 95% CI criterion.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #dcfce7; color: #16a34a;">&#x1F9E9;</div>
+                <h3>Component-level Attribution</h3>
+                <p>A per-component ablation under perturbation isolates the source: adaptive multi-scale aggregation and dual-stage placement each carry a significant share, gating a smaller one.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon" style="background: #ede9fe; color: #7c3aed;">&#x26A1;</div>
+                <h3>Small Objects, Low Overhead</h3>
+                <p>Competitive on clean evaluation at both IoU thresholds, with the clearest gains on small objects, at +0.6% parameters and ~9% runtime over additive fusion.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════ KEY IDEA ════════════════════ -->
+<section class="arch-section">
+    <div class="container">
+        <h2 class="section-title">Key Idea</h2>
+        <p class="section-subtitle">What changes relative to additive fusion (TR3D+FF), at a single fusion stage.</p>
+        <div class="key-idea-grid">
+            <img src="assets/fusion.png" alt="Additive fusion versus AMGF3D at one fusion stage" class="key-idea-img">
+            <div class="key-idea-text">
+                <h3>Selective, not unconditional</h3>
+                <p>The additive baseline samples <strong>a single fixed FPN level</strong> and adds it to every active voxel with the same weight.</p>
+                <p>AMGF3D samples P<sub>2</sub>&ndash;P<sub>5</sub> and mixes them with <strong>per-voxel weights</strong> predicted from the voxel's own 3D feature, then <strong>gates</strong> the resulting residual on the joint geometry&ndash;appearance pair.</p>
+                <p>A voxel whose projected evidence disagrees with its geometry can therefore suppress that evidence, instead of receiving it unconditionally.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════ ARCHITECTURE ════════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">Architecture</h2>
+        <p class="section-subtitle">A sparse 3D stream processes colored point clouds while a frozen ResNet-FPN extracts image features; fusion happens at two backbone stages.</p>
+        <img src="assets/architecture.png" alt="AMGF3D architecture overview" class="arch-img">
+        <p class="arch-caption">
+            Projected FPN descriptors are fused into active voxels at backbone layers 1 and 3 using adaptive scale weighting and per-voxel gating, before the TR3D neck and detection head.
+        </p>
+
+        <div class="pipeline">
+            <div class="pipeline-step">
+                <div class="step-num">1</div>
+                <div class="step-title">Project</div>
+                <div class="step-detail">Voxel centers to the image plane</div>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-step">
+                <div class="step-num">2</div>
+                <div class="step-title">Sample</div>
+                <div class="step-detail">All four levels P<sub>2</sub>&ndash;P<sub>5</sub></div>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-step" style="border-color: var(--primary);">
+                <div class="step-num">3</div>
+                <div class="step-title">Weight</div>
+                <div class="step-detail">Softmax scale mixture per voxel</div>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-step" style="border-color: var(--primary);">
+                <div class="step-num">4</div>
+                <div class="step-title">Gate</div>
+                <div class="step-detail">Sigmoid on geometry &amp; appearance</div>
+            </div>
+            <div class="pipeline-arrow">&rarr;</div>
+            <div class="pipeline-step">
+                <div class="step-num">5</div>
+                <div class="step-title">Fuse</div>
+                <div class="step-detail">Gated residual update</div>
+            </div>
+        </div>
+        <p class="arch-caption">The module is applied at an early stage (s&nbsp;=&nbsp;1) and a later stage (s&nbsp;=&nbsp;3), retaining single-pass inference.</p>
+    </div>
+</section>
+
+<!-- ════════════════════ ROBUSTNESS (headline result) ════════════════════ -->
+<section class="arch-section">
+    <div class="container">
+        <h2 class="section-title">Robustness to Input Perturbations</h2>
+        <p class="section-subtitle">The central result. Absolute mAP@0.25 for the additive-fusion baseline TR3D+FF and AMGF3D, averaged over six matched training seeds per dataset.</p>
+
+        <div class="table-wrap">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Perturbation (level)</th>
+                    <th>ScanNet<br>TR3D+FF</th>
+                    <th>ScanNet<br>AMGF3D</th>
+                    <th>SUN RGB-D<br>TR3D+FF</th>
+                    <th>SUN RGB-D<br>AMGF3D</th>
+                    <th>ARKitScenes<br>TR3D+FF</th>
+                    <th>ARKitScenes<br>AMGF3D</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Clean</td><td>74.5</td><td>75.6</td><td>68.7</td><td>69.1</td><td>76.1</td><td>77.4</td></tr>
+                <tr><td>Point subsample (50%)</td><td>69.6</td><td>70.1</td><td>68.6</td><td>68.5</td><td>75.2</td><td>75.8</td></tr>
+                <tr><td>RGB Gaussian (&sigma;=0.1)</td><td>71.0</td><td>70.8</td><td>68.6</td><td>68.5</td><td>75.3</td><td>75.9</td></tr>
+                <tr><td>RGB dropout (50%)</td><td>71.1</td><td>71.7</td><td>64.5</td><td class="best">64.9</td><td>75.3</td><td class="best">76.0</td></tr>
+                <tr><td>Calib. rotation (3&deg;)</td><td>66.7</td><td>67.2</td><td>65.0</td><td class="best">65.9</td><td>61.7</td><td class="best">64.3</td></tr>
+                <tr><td>Point-coord. noise (&sigma;=0.10&nbsp;m)</td><td>0.7</td><td>1.1</td><td>3.3</td><td>8.1</td><td>4.1</td><td>3.5</td></tr>
+            </tbody>
+        </table>
+        </div>
+        <p class="table-note">
+            <strong>Bold</strong> marks AMGF3D entries significantly more robust than TR3D+FF under the paired-seed criterion.
+            RGB dropout and calibration rotation are the two <em>pre-specified primary</em> perturbations; point-coordinate noise is a secondary descriptive check.
+        </p>
+
+        <img src="assets/robustness.png" alt="Robustness summary: paired gains and cross-method AP retained" class="arch-img" style="margin-top: 32px;">
+        <p class="arch-caption">
+            <strong>(a)</strong> Paired difference &Delta; = AMGF3D &minus; TR3D+FF in mAP@0.25 at representative severities, averaged over six matched seeds; filled markers are significant, hollow are not.
+            <strong>(b)</strong> SUN RGB-D cross-method robustness as AP retained relative to clean.
+        </p>
+    </div>
+</section>
+
+<!-- ════════════════════ CLEAN DETECTION ════════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">Clean Detection</h2>
+        <p class="section-subtitle">mAP@0.25 / @0.50 in the FCAF3D/TR3D Best (Mean) convention. AMGF3D stays competitive on clean evaluation without being the headline claim.</p>
+
+        <div class="table-wrap">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Venue</th>
+                    <th>Inputs</th>
+                    <th>ScanNet<br>@0.25</th>
+                    <th>ScanNet<br>@0.50</th>
+                    <th>SUN RGB-D<br>@0.25</th>
+                    <th>SUN RGB-D<br>@0.50</th>
+                    <th>ARKit<br>@0.25</th>
+                    <th>ARKit<br>@0.50</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="category-row"><td colspan="9">Sparse-voxel reproductions (matched pipeline)</td></tr>
+                <tr><td>FCAF3D</td><td>ECCV'22</td><td>PC</td><td>71.5 (70.7)</td><td>57.3 (56.0)</td><td>64.2 (63.8)</td><td>48.9 (48.2)</td><td>72.3 (71.7)</td><td>60.5 (59.6)</td></tr>
+                <tr><td>TR3D</td><td>ICIP'23</td><td>PC</td><td>72.9 (72.0)</td><td>59.3 (57.4)</td><td>67.1 (66.3)</td><td>50.4 (49.6)</td><td>75.4 (74.9)</td><td>61.3 (60.7)</td></tr>
+                <tr><td>TR3D+FF</td><td>ICIP'23</td><td>PC+RGB</td><td>75.3 (74.5)</td><td>60.1 (58.9)</td><td>69.4 (68.7)</td><td>53.4 (52.2)</td><td>76.7 (76.1)</td><td>62.5 (61.7)</td></tr>
+                <tr class="category-row"><td colspan="9">Quoted from source papers</td></tr>
+                <tr><td>SPGroup3D</td><td>AAAI'24</td><td>PC</td><td>74.3 (73.5)</td><td>59.6 (58.3)</td><td>65.4 (64.8)</td><td>47.1 (46.4)</td><td>&mdash;</td><td>&mdash;</td></tr>
+                <tr><td>V-DETR</td><td>ICLR'24</td><td>PC</td><td class="best">77.8</td><td>65.9</td><td>67.5</td><td>50.4</td><td>&mdash;</td><td>&mdash;</td></tr>
+                <tr><td>UniDet3D<sup>&dagger;</sup></td><td>AAAI'25</td><td>PC</td><td>77.5 (77.0)</td><td class="best">66.1 (65.0)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+                <tr class="ours">
+                    <td><strong>AMGF3D (Ours)</strong></td><td>&mdash;</td><td>PC+RGB</td>
+                    <td>76.1 (75.6)</td><td>60.1 (59.0)</td>
+                    <td class="best">69.7 (69.1)</td><td class="best">53.6 (52.3)</td>
+                    <td class="best">77.8 (77.4)</td><td class="best">63.9 (62.7)</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        <p class="table-note">
+            The sparse-voxel rows (FCAF3D, TR3D, TR3D+FF, AMGF3D) are <strong>our own reproductions</strong> under one matched pipeline &mdash; same frozen 2D backbone, splits, schedule and evaluation code &mdash; and are <em>not</em> quotations of those papers' printed numbers, so small differences are expected. Other rows are quoted from their source papers. <strong>Bold</strong> marks the best entry per column.
+            <sup>&dagger;</sup>For UniDet3D we quote its <em>single-dataset</em> ScanNet result (trained on ScanNet alone) for a like-for-like comparison; its headline numbers use joint training over six datasets, and its ARKitScenes protocol is not comparable to ours.
+        </p>
+    </div>
+</section>
+
+<!-- ════════════════════ ABLATION ════════════════════ -->
+<section class="arch-section">
+    <div class="container">
+        <h2 class="section-title">Per-Component Ablation</h2>
+        <p class="section-subtitle">On ARKitScenes, mAP@0.25 over six matched training seeds. Each row removes one component from the full model.</p>
+
+        <div class="table-wrap">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Variant</th>
+                    <th>Clean</th>
+                    <th>Calib. 3&deg;</th>
+                    <th>Drop. 50%</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>TR3D+FF (additive)</td><td>76.1</td><td>61.7</td><td>75.3</td></tr>
+                <tr><td>early-only (&minus;late stage)</td><td>77.1</td><td>61.9</td><td>75.7</td></tr>
+                <tr><td>late-only (&minus;early stage)</td><td>76.8</td><td>62.5</td><td>75.4</td></tr>
+                <tr><td>single-scale (&minus;multi-scale)</td><td>77.2</td><td>62.7</td><td>75.9</td></tr>
+                <tr><td>no-gate (&minus;gate)</td><td>77.1</td><td>63.4</td><td>75.8</td></tr>
+                <tr class="ours"><td><strong>AMGF3D (full)</strong></td><td class="best">77.4</td><td class="best">64.3</td><td class="best">76.0</td></tr>
+            </tbody>
+        </table>
+        </div>
+        <p class="table-note">
+            Under calibration rotation every appearance-side component contributes: removing multi-scale aggregation costs 1.6 mAP@0.25, the early stage 1.8, and the late stage 2.4 (six per-seed deltas of one sign, 95% CI excludes zero, exact Wilcoxon <em>p</em>&nbsp;=&nbsp;0.03125). Under clean input and RGB dropout all component deltas fall within seed noise (&le;&nbsp;0.6), which is why these choices are motivated by robustness and not by clean accuracy.
+        </p>
+    </div>
+</section>
+
+<!-- ════════════════════ QUALITATIVE ════════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">Qualitative Results</h2>
+        <p class="section-subtitle">Per-scene predictions on ARKitScenes, SUN RGB-D, and ScanNet.</p>
+        <img src="assets/qualitative.jpg" alt="Qualitative comparison across ARKitScenes, SUN RGB-D and ScanNet" class="arch-img">
+        <p class="arch-caption">
+            Columns: paired RGB frame, bird's-eye view ground truth, TR3D+FF, and AMGF3D. Box colors denote TP/FP/FN at IoU&nbsp;&ge;&nbsp;0.25. On ScanNet and ARKitScenes the single posed RGB frame covers only part of the reconstructed scene, and the BEV is cropped for legibility.
+        </p>
+    </div>
+</section>
+
+<!-- ════════════════════ BIBTEX ════════════════════ -->
+<section class="bibtex-section">
+    <div class="container">
+        <h2 class="section-title">Citation</h2>
+        <p class="section-subtitle">If you find this work useful, please cite:</p>
+        <div class="bibtex-block"><button class="copy-btn" onclick="copyBibtex()">Copy</button><span class="key">@inproceedings</span>{<span class="value">ahmed2026amgf3d</span>,
+  <span class="field">title</span>     = {AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection},
+  <span class="field">author</span>    = {Ahmed, Faisal and Quarles, John and Desai, Kevin},
+  <span class="field">booktitle</span> = {British Machine Vision Conference (BMVC)},
+  <span class="field">year</span>      = {2026}
+}</div>
+    </div>
+</section>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer>
+    <p>
+        AMGF3D &middot;
+        <a href="https://github.com/UTSA-VIRLab/AMGF3D">GitHub</a> &middot;
+        Built on <a href="https://github.com/open-mmlab/mmdetection3d">MMDetection3D</a>, evaluated on
+        <a href="http://www.scan-net.org/">ScanNet</a>,
+        <a href="https://rgbd.cs.princeton.edu/">SUN RGB-D</a> and
+        <a href="https://github.com/apple/ARKitScenes">ARKitScenes</a>
+    </p>
+    <p style="margin-top: 8px; font-size: 0.8rem; color: #94a3b8;">
+        Template inspired by <a href="https://nerfies.github.io/" style="color: #94a3b8;">Nerfies</a>
+    </p>
+</footer>
+
+<script>
+function copyBibtex() {
+    const bibtex = `@inproceedings{ahmed2026amgf3d,
+  title     = {AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection},
+  author    = {Ahmed, Faisal and Quarles, John and Desai, Kevin},
+  booktitle = {British Machine Vision Conference (BMVC)},
+  year      = {2026}
+}`;
+    navigator.clipboard.writeText(bibtex).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+}
+</script>
+
+</body>
+</html>
