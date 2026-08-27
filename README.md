@@ -1,4 +1,11 @@
-## AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection
+# AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection
+
+<p align="center">
+  <a href="https://utsa-virlab.github.io/AMGF3D/"><strong>Project Page</strong></a> &nbsp;|&nbsp;
+  <a href="assets/AMGF3D_BMVC2026.pdf"><strong>Paper</strong></a> &nbsp;|&nbsp;
+  <a href="#installation"><strong>Installation</strong></a> &nbsp;|&nbsp;
+  <a href="#getting-started"><strong>Getting Started</strong></a>
+</p>
 
 **News: our paper is accepted at BMVC 2026.**
 
