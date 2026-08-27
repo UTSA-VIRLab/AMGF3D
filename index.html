@@ -12,10 +12,10 @@
     <meta property="og:description" content="BMVC 2026: selective multi-scale RGB-D fusion for robust indoor 3D object detection.">
     <meta property="og:image" content="https://utsa-virlab.github.io/AMGF3D/assets/architecture.png">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#090d12">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Manrope:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2563eb;
@@ -356,44 +356,78 @@
             .pipeline-arrow { justify-content: center; transform: rotate(90deg); padding: 4px 0; }
         }
     </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- back to lab -->
-<a href="https://utsa-virlab.github.io/" class="back-link" aria-label="Return to the VIR Lab website"
-   style="position:fixed;top:16px;left:16px;z-index:1000;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:rgba(0,0,0,0.55);color:#fff;text-decoration:none;font-size:0.85rem;font-weight:500;backdrop-filter:blur(4px);">&larr;&nbsp;VIR Lab</a>
+<nav class="site-nav" aria-label="Primary navigation">
+    <a class="nav-brand" href="#top" aria-label="AMGF3D home">
+        <span class="brand-mark">A3</span>
+        AMGF3D / BMVC 2026
+    </a>
+    <div class="nav-links">
+        <a href="#method">Method</a>
+        <a href="#robustness">Robustness</a>
+        <a href="#clean-results">Results</a>
+        <a href="#citation">Citation</a>
+    </div>
+    <a class="lab-link" href="https://utsa-virlab.github.io/" target="_blank" rel="noopener noreferrer">VIR Lab&nbsp;&nearr;</a>
+</nav>
 
 <!-- ════════════════════ HERO ════════════════════ -->
-<header class="hero">
+<header class="hero" id="top">
     <div class="hero-content">
-        <div class="venue">BMVC 2026</div>
-        <h1>AMGF3D</h1>
-        <p class="subtitle">
-            Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection
-        </p>
-        <p class="authors">
-            Faisal Ahmed &middot;
-            John Quarles &middot;
-            <a href="https://www.linkedin.com/in/kevinpdesai/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Kevin Desai</a>
-        </p>
-        <p class="authors" style="font-weight:400;font-size:0.9rem;opacity:0.85;">
-            The University of Texas at San Antonio
-        </p>
-        <div class="btn-row">
-            <a href="assets/AMGF3D_BMVC2026.pdf" class="btn btn-primary">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-                Paper
-            </a>
-            <a href="https://github.com/UTSA-VIRLab/AMGF3D" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                Code
-            </a>
+        <div class="hero-copy">
+            <div class="venue">British Machine Vision Conference / 2026</div>
+            <h1><span>AMGF</span><em>3D</em></h1>
+            <p class="subtitle">
+                Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection
+            </p>
+            <p class="authors">
+                <a class="author-link" href="https://www.linkedin.com/in/faisal-ahmed-565943145/" target="_blank" rel="noopener noreferrer" aria-label="Faisal Ahmed on LinkedIn">Faisal Ahmed</a>
+                <a class="author-link" href="https://www.linkedin.com/in/johnpquarles/" target="_blank" rel="noopener noreferrer" aria-label="John Quarles on LinkedIn">John Quarles</a>
+                <a class="author-link" href="https://www.linkedin.com/in/kevinpdesai/" target="_blank" rel="noopener noreferrer" aria-label="Kevin Desai on LinkedIn">Kevin Desai</a>
+            </p>
+            <p class="authors affiliation">The University of Texas at San Antonio</p>
+            <div class="btn-row">
+                <a href="assets/AMGF3D_BMVC2026.pdf" class="btn btn-primary">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                    Read paper
+                </a>
+                <a href="https://github.com/UTSA-VIRLab/AMGF3D" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    Explore code
+                </a>
+            </div>
         </div>
+        <div class="hero-visual" aria-hidden="true">
+            <div class="visual-topline"><span>Adaptive routing</span><span>Voxel / v</span></div>
+            <div class="fusion-board">
+                <div class="fpn-scales">
+                    <div class="scale-row" style="--i:1"><span>P2</span><i></i></div>
+                    <div class="scale-row" style="--i:2"><span>P3</span><i></i></div>
+                    <div class="scale-row" style="--i:3"><span>P4</span><i></i></div>
+                    <div class="scale-row" style="--i:4"><span>P5</span><i></i></div>
+                </div>
+                <div class="signal-line"></div>
+                <div class="mixer-node"><div><strong>&alpha;<sub>v</sub></strong><small>Scale mix</small></div></div>
+                <div class="voxel-field"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="route-line"></div>
+                <div class="gate-node"><div><strong>&sigma;</strong><small>Gate</small></div></div>
+            </div>
+            <div class="visual-caption"><span>2D appearance</span><span>3D geometry</span></div>
+        </div>
+    </div>
+    <div class="hero-metrics" role="list" aria-label="AMGF3D highlights">
+        <div class="metric" role="listitem"><strong>P2&ndash;P5</strong><span>Adaptive scales</span></div>
+        <div class="metric" role="listitem"><strong>2</strong><span>Fusion stages</span></div>
+        <div class="metric" role="listitem"><strong>6</strong><span>Matched seeds</span></div>
+        <div class="metric" role="listitem"><strong>+0.6%</strong><span>Parameters</span></div>
     </div>
 </header>
 
 <!-- ════════════════════ ABSTRACT ════════════════════ -->
-<section class="abstract">
+<section class="abstract" id="abstract">
     <div class="container">
         <h2 class="section-title">Abstract</h2>
         <p class="abstract-text">
@@ -403,28 +437,28 @@
 </section>
 
 <!-- ════════════════════ KEY CONTRIBUTIONS ════════════════════ -->
-<section>
+<section id="contributions">
     <div class="container">
         <h2 class="section-title">Key Contributions</h2>
         <p class="section-subtitle">Prior projection-based fusion ties each 3D location to a single, fixed-scale 2D descriptor and injects it unconditionally. AMGF3D removes both assumptions.</p>
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon" style="background: #dbeafe; color: #2563eb;">&#x1F3AF;</div>
+                <div class="feature-icon">01</div>
                 <h3>Adaptive Multi-scale Gated Fusion</h3>
                 <p>A per-voxel, multi-scale, gated RGB-D fusion module that injects 2D pyramid features into a sparse-voxel backbone at two stages, conditioned on local 3D context.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" style="background: #fef3c7; color: #d97706;">&#x1F4CA;</div>
+                <div class="feature-icon">02</div>
                 <h3>Multi-seed Robustness Study</h3>
                 <p>A statistically paired evaluation across three benchmarks &mdash; six matched seeds per dataset, pre-specified primary perturbations, and an exact-Wilcoxon with 95% CI criterion.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" style="background: #dcfce7; color: #16a34a;">&#x1F9E9;</div>
+                <div class="feature-icon">03</div>
                 <h3>Component-level Attribution</h3>
                 <p>A per-component ablation under perturbation isolates the source: adaptive multi-scale aggregation and dual-stage placement each carry a significant share, gating a smaller one.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon" style="background: #ede9fe; color: #7c3aed;">&#x26A1;</div>
+                <div class="feature-icon">04</div>
                 <h3>Small Objects, Low Overhead</h3>
                 <p>Competitive on clean evaluation at both IoU thresholds, with the clearest gains on small objects, at +0.6% parameters and ~9% runtime over additive fusion.</p>
             </div>
@@ -433,7 +467,7 @@
 </section>
 
 <!-- ════════════════════ KEY IDEA ════════════════════ -->
-<section class="arch-section">
+<section class="arch-section" id="method">
     <div class="container">
         <h2 class="section-title">Key Idea</h2>
         <p class="section-subtitle">What changes relative to additive fusion (TR3D+FF), at a single fusion stage.</p>
@@ -450,7 +484,7 @@
 </section>
 
 <!-- ════════════════════ ARCHITECTURE ════════════════════ -->
-<section>
+<section id="architecture">
     <div class="container">
         <h2 class="section-title">Architecture</h2>
         <p class="section-subtitle">A sparse 3D stream processes colored point clouds while a frozen ResNet-FPN extracts image features; fusion happens at two backbone stages.</p>
@@ -495,7 +529,7 @@
 </section>
 
 <!-- ════════════════════ ROBUSTNESS (headline result) ════════════════════ -->
-<section class="arch-section">
+<section class="arch-section" id="robustness">
     <div class="container">
         <h2 class="section-title">Robustness to Input Perturbations</h2>
         <p class="section-subtitle">The central result. Absolute mAP@0.25 for the additive-fusion baseline TR3D+FF and AMGF3D, averaged over six matched training seeds per dataset.</p>
@@ -537,7 +571,7 @@
 </section>
 
 <!-- ════════════════════ CLEAN DETECTION ════════════════════ -->
-<section>
+<section id="clean-results">
     <div class="container">
         <h2 class="section-title">Clean Detection</h2>
         <p class="section-subtitle">mAP@0.25 / @0.50 in the FCAF3D/TR3D Best (Mean) convention. AMGF3D stays competitive on clean evaluation without being the headline claim.</p>
@@ -583,7 +617,7 @@
 </section>
 
 <!-- ════════════════════ ABLATION ════════════════════ -->
-<section class="arch-section">
+<section class="arch-section" id="ablation">
     <div class="container">
         <h2 class="section-title">Per-Component Ablation</h2>
         <p class="section-subtitle">On ARKitScenes, mAP@0.25 over six matched training seeds. Each row removes one component from the full model.</p>
@@ -615,7 +649,7 @@
 </section>
 
 <!-- ════════════════════ QUALITATIVE ════════════════════ -->
-<section>
+<section id="qualitative">
     <div class="container">
         <h2 class="section-title">Qualitative Results</h2>
         <p class="section-subtitle">Per-scene predictions on ARKitScenes, SUN RGB-D, and ScanNet.</p>
@@ -627,7 +661,7 @@
 </section>
 
 <!-- ════════════════════ BIBTEX ════════════════════ -->
-<section class="bibtex-section">
+<section class="bibtex-section" id="citation">
     <div class="container">
         <h2 class="section-title">Citation</h2>
         <p class="section-subtitle">If you find this work useful, please cite:</p>
@@ -650,23 +684,67 @@
         <a href="https://rgbd.cs.princeton.edu/">SUN RGB-D</a> and
         <a href="https://github.com/apple/ARKitScenes">ARKitScenes</a>
     </p>
-    <p style="margin-top: 8px; font-size: 0.8rem; color: #94a3b8;">
-        Template inspired by <a href="https://nerfies.github.io/" style="color: #94a3b8;">Nerfies</a>
+    <p class="footer-note">
+        Designed for AMGF3D &middot; Adaptive signals, selective fusion
     </p>
 </footer>
 
 <script>
-function copyBibtex() {
+async function copyBibtex() {
     const bibtex = `@inproceedings{ahmed2026amgf3d,
   title     = {AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection},
   author    = {Ahmed, Faisal and Quarles, John and Desai, Kevin},
   booktitle = {British Machine Vision Conference (BMVC)},
   year      = {2026}
 }`;
-    navigator.clipboard.writeText(bibtex).then(() => {
-        const btn = document.querySelector('.copy-btn');
-        btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = 'Copy', 2000);
+    let copied = false;
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(bibtex);
+            copied = true;
+        }
+    } catch (_) {
+        copied = false;
+    }
+    if (!copied) {
+        const fallback = document.createElement('textarea');
+        fallback.value = bibtex;
+        fallback.setAttribute('readonly', '');
+        fallback.style.position = 'fixed';
+        fallback.style.opacity = '0';
+        document.body.appendChild(fallback);
+        fallback.select();
+        copied = document.execCommand('copy');
+        fallback.remove();
+    }
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = copied ? 'Copied!' : 'Copy failed';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+}
+
+const observedSections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+if ('IntersectionObserver' in window) {
+    document.documentElement.classList.add('reveal-ready');
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+        });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach((link) => {
+                const target = link.getAttribute('href').slice(1);
+                link.classList.toggle('active', target === entry.target.id);
+            });
+        });
+    }, { rootMargin: '-28% 0px -62% 0px' });
+    observedSections.forEach((section) => {
+        revealObserver.observe(section);
+        sectionObserver.observe(section);
     });
 }
 </script>

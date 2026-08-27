@@ -9,7 +9,7 @@
 
 **News: our paper is accepted at BMVC 2026.**
 
-Faisal Ahmed, John Quarles, Kevin Desai — Department of Computer Science, University of Texas at San Antonio
+[Faisal Ahmed](https://www.linkedin.com/in/faisal-ahmed-565943145/), [John Quarles](https://www.linkedin.com/in/johnpquarles/), [Kevin Desai](https://www.linkedin.com/in/kevinpdesai/) — Department of Computer Science, University of Texas at San Antonio
 
 This repository contains the implementation of **AMGF3D**, a selective RGB-D fusion module for
 sparse-voxel indoor 3D object detectors. Projection-based fusion normally ties every 3D location to a
