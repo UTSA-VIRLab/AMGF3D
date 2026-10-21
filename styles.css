@@ -373,171 +373,130 @@ button:focus-visible {
     border-top: 1px solid rgba(255, 255, 255, 0.09);
 }
 
-.fusion-board {
+/* ── Adaptive-routing diagram (inline SVG). Replaces the former hand-positioned
+   .fusion-board panel, which sized the FPN bars back-to-front (P5 widest) and
+   drew no conditioning edge from the voxel feature to either the scale mixture
+   or the gate — the two things that actually make the routing adaptive. ──── */
+.routing-diagram {
     position: absolute;
-    inset: 58px 24px 52px;
+    inset: 46px 20px 46px;
+    width: calc(100% - 40px);
+    height: calc(100% - 92px);
 }
 
-.fusion-board::before {
-    position: absolute;
-    inset: 0;
-    border-radius: 14px;
-    content: '';
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-    background-size: 19px 19px;
-    opacity: 0.6;
-}
-
-.fpn-scales {
-    position: absolute;
-    z-index: 2;
-    top: 45px;
-    left: 5px;
-    display: grid;
-    gap: 11px;
-}
-
-.scale-row {
-    position: relative;
-    display: flex;
-    width: 94px;
-    height: 38px;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 11px;
-    border: 1px solid rgba(92, 200, 255, 0.42);
-    background: rgba(92, 200, 255, 0.08);
-    color: #b9e8ff;
+.routing-diagram text {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.69rem;
+    fill: #82909d;
 }
 
-.scale-row i {
-    width: 18px;
-    height: 3px;
-    background: var(--cyan);
-    box-shadow: 0 0 10px rgba(92, 200, 255, 0.6);
+.rt-sec {
+    font-size: 9px;
+    letter-spacing: 0.14em;
 }
 
-.scale-row:nth-child(2) { width: 106px; }
-.scale-row:nth-child(2) i { width: 23px; }
-.scale-row:nth-child(3) { width: 118px; }
-.scale-row:nth-child(3) i { width: 28px; }
-.scale-row:nth-child(4) { width: 130px; }
-.scale-row:nth-child(4) i { width: 33px; }
-
-.signal-line {
-    position: absolute;
-    z-index: 1;
-    top: 161px;
-    left: 104px;
-    width: 160px;
-    height: 1px;
-    overflow: visible;
-    background: linear-gradient(90deg, var(--cyan), var(--signal));
-    transform: rotate(-5deg);
-    transform-origin: left center;
+.rt-note {
+    font-size: 7.5px;
+    letter-spacing: 0.11em;
+    fill: #6c7885;
 }
 
-.signal-line::after {
-    position: absolute;
-    top: -3px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 0 14px var(--signal);
-    content: '';
-    animation: signal-flow 2.4s ease-in-out infinite;
+.rt-lvl text {
+    font-size: 11px;
+    fill: #b9e8ff;
 }
 
-.mixer-node,
-.gate-node {
-    position: absolute;
-    z-index: 3;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    font-family: 'IBM Plex Mono', monospace;
-    text-align: center;
+.rt-lbl { font-size: 12px; }
+.rt-sub { font-size: 7.5px; }
+
+.rt-glyph {
+    font-size: 17px;
+    text-anchor: middle;
 }
 
-.mixer-node {
-    top: 119px;
-    left: 200px;
-    width: 92px;
-    height: 92px;
-    border: 1px solid rgba(101, 239, 189, 0.7);
-    background: radial-gradient(circle, rgba(101, 239, 189, 0.22), rgba(101, 239, 189, 0.04) 68%);
-    color: var(--signal);
-    box-shadow: 0 0 0 12px rgba(101, 239, 189, 0.035), 0 0 35px rgba(101, 239, 189, 0.14);
+.rt-cap {
+    font-size: 7px;
+    letter-spacing: 0.14em;
+    text-anchor: middle;
 }
 
-.mixer-node strong,
-.gate-node strong {
-    display: block;
-    font-size: 1.25rem;
-    line-height: 1;
+.rt-eq {
+    font-size: 8.5px;
+    letter-spacing: 0.03em;
+    fill: #6c7885;
 }
 
-.mixer-node small,
-.gate-node small {
-    display: block;
-    margin-top: 7px;
-    font-size: 0.5rem;
-    letter-spacing: 0.12em;
+.rt-t-cyan   { fill: var(--cyan); }
+.rt-t-violet { fill: var(--violet); }
+.rt-t-signal { fill: var(--signal); }
+.rt-t-coral  { fill: var(--coral); }
+
+.rt-bar rect {
+    fill: rgba(92, 200, 255, 0.08);
+    stroke: rgba(92, 200, 255, 0.42);
+    stroke-width: 1;
 }
 
-.gate-node {
-    right: 17px;
-    bottom: 64px;
-    width: 76px;
-    height: 76px;
-    border: 1px solid rgba(255, 119, 89, 0.75);
-    background: rgba(255, 119, 89, 0.1);
-    color: var(--coral);
-    animation: gate-pulse 3s ease-in-out infinite;
+.rt-tick rect {
+    fill: var(--cyan);
+    opacity: 0.85;
 }
 
-.voxel-field {
-    position: absolute;
-    z-index: 2;
-    right: 18px;
-    top: 28px;
-    width: 140px;
-    height: 160px;
-    transform: rotate(-8deg);
+.rt-vox rect {
+    fill: rgba(141, 136, 255, 0.16);
+    stroke: rgba(141, 136, 255, 0.6);
+    stroke-width: 1;
 }
 
-.voxel-field i {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border: 1px solid rgba(141, 136, 255, 0.75);
-    background: rgba(141, 136, 255, 0.16);
-    box-shadow: 0 0 13px rgba(141, 136, 255, 0.13);
+.rt-vox-cur {
+    fill: rgba(141, 136, 255, 0.55);
+    stroke: var(--violet);
+    stroke-width: 1.2;
 }
 
-.voxel-field i:nth-child(1) { top: 10px; left: 58px; }
-.voxel-field i:nth-child(2) { top: 36px; left: 21px; }
-.voxel-field i:nth-child(3) { top: 48px; left: 84px; }
-.voxel-field i:nth-child(4) { top: 72px; left: 48px; }
-.voxel-field i:nth-child(5) { top: 91px; left: 107px; }
-.voxel-field i:nth-child(6) { top: 118px; left: 70px; }
-.voxel-field i:nth-child(7) { top: 135px; left: 17px; }
-.voxel-field i:nth-child(8) { top: 20px; left: 119px; }
+.rt-vox-ring {
+    fill: none;
+    stroke: rgba(141, 136, 255, 0.45);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+}
 
-.route-line {
-    position: absolute;
-    z-index: 1;
-    right: 48px;
-    bottom: 118px;
-    width: 196px;
-    height: 118px;
-    border-right: 1px solid var(--coral);
-    border-bottom: 1px solid var(--coral);
-    border-radius: 0 0 38px 0;
-    opacity: 0.55;
+.rt-edge path {
+    fill: none;
+    stroke-width: 1.1;
+}
+
+.rt-e-cyan path   { stroke: rgba(92, 200, 255, 0.55); }
+.rt-e-violet path { stroke: rgba(141, 136, 255, 0.85); }
+.rt-e-signal path { stroke: rgba(101, 239, 189, 0.85); }
+.rt-dash path     { stroke-dasharray: 4 3; }
+
+.rt-node { stroke-width: 1; }
+
+.rt-n-mix {
+    fill: rgba(101, 239, 189, 0.1);
+    stroke: rgba(101, 239, 189, 0.7);
+}
+
+.rt-n-gate {
+    fill: rgba(255, 119, 89, 0.1);
+    stroke: rgba(255, 119, 89, 0.75);
+    animation: rt-gate-pulse 3s ease-in-out infinite;
+}
+
+.rt-rule {
+    stroke: rgba(255, 255, 255, 0.09);
+    stroke-width: 1;
+}
+
+/* Travelling highlight along the mixed-appearance edge into the gate. */
+.rt-flow {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-dasharray: 1 118;
+    filter: drop-shadow(0 0 5px var(--signal));
+    animation: rt-flow 2.4s ease-in-out infinite;
 }
 
 .hero-metrics {
@@ -814,6 +773,89 @@ section {
     color: var(--text);
     box-shadow: inset 0 -0.38em rgba(101, 239, 189, 0.42);
 }
+
+.routing-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+    margin-top: clamp(38px, 5vw, 62px);
+}
+
+.routing-step {
+    padding: 26px 24px 24px;
+    border: 1px solid var(--line);
+    border-radius: 4px 20px 4px 20px;
+    background: var(--surface);
+}
+
+.routing-step p {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.routing-step strong {
+    color: var(--text);
+    box-shadow: inset 0 -0.38em rgba(101, 239, 189, 0.42);
+}
+
+.routing-step-tag {
+    margin-bottom: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.rt-tag-cyan   { color: #1f7fb0; }
+.rt-tag-violet { color: #5a54c9; }
+.rt-tag-coral  { color: #c4482c; }
+
+.routing-step code,
+code.inline-eq {
+    display: block;
+    padding: 10px 12px;
+    border-left: 2px solid var(--signal);
+    background: rgba(101, 239, 189, 0.09);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.76rem;
+    line-height: 1.5;
+    overflow-x: auto;
+}
+
+code.inline-eq {
+    display: inline-block;
+    padding: 3px 8px;
+    border-left: 0;
+    border-radius: 3px;
+}
+
+.teaser-card {
+    display: block;
+    margin: 0 0 30px;
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.teaser-card img {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 4px 26px 4px 26px;
+    box-shadow: var(--shadow);
+}
+
+.teaser-card span {
+    display: block;
+    margin-top: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+.teaser-card:hover span { color: var(--text); }
 
 #architecture {
     background: var(--surface);
@@ -1107,16 +1149,15 @@ footer a:hover {
     color: #4f5c67;
 }
 
-@keyframes signal-flow {
-    0% { left: 0; opacity: 0; }
-    18% { opacity: 1; }
-    82% { opacity: 1; }
-    100% { left: calc(100% - 7px); opacity: 0; }
+/* SVG geometry cannot take box-shadow, so the gate pulses on stroke instead. */
+@keyframes rt-flow {
+    from { stroke-dashoffset: 119; }
+    to   { stroke-dashoffset: 0; }
 }
 
-@keyframes gate-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 119, 89, 0.1); }
-    50% { box-shadow: 0 0 0 13px rgba(255, 119, 89, 0.025), 0 0 28px rgba(255, 119, 89, 0.16); }
+@keyframes rt-gate-pulse {
+    0%, 100% { stroke-opacity: 0.75; stroke-width: 1; }
+    50%      { stroke-opacity: 1;    stroke-width: 1.8; }
 }
 
 @keyframes reveal-section {
@@ -1215,6 +1256,10 @@ footer a:hover {
         grid-column: auto;
     }
 
+    .routing-steps {
+        grid-template-columns: 1fr;
+    }
+
     .key-idea-grid {
         grid-template-columns: 1fr;
     }
@@ -1247,24 +1292,6 @@ footer a:hover {
 
     .hero-visual {
         min-height: 385px;
-    }
-
-    .fusion-board {
-        right: 12px;
-        left: 12px;
-    }
-
-    .mixer-node {
-        left: 44%;
-    }
-
-    .signal-line {
-        width: 115px;
-    }
-
-    .voxel-field {
-        right: -6px;
-        transform: scale(0.85) rotate(-8deg);
     }
 
     .hero-metrics {

@@ -10,8 +10,12 @@
     <meta property="og:url" content="https://utsa-virlab.github.io/AMGF3D/">
     <meta property="og:title" content="AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection">
     <meta property="og:description" content="BMVC 2026: selective multi-scale RGB-D fusion for robust indoor 3D object detection.">
-    <meta property="og:image" content="https://utsa-virlab.github.io/AMGF3D/assets/architecture.png">
+    <meta property="og:image" content="https://utsa-virlab.github.io/AMGF3D/assets/teaser.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="675">
+    <meta property="og:image:alt" content="AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection (BMVC 2026)">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://utsa-virlab.github.io/AMGF3D/assets/teaser.png">
     <meta name="theme-color" content="#090d12">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -400,22 +404,100 @@
                 </a>
             </div>
         </div>
-        <div class="hero-visual" aria-hidden="true">
-            <div class="visual-topline"><span>Adaptive routing</span><span>Voxel / v</span></div>
-            <div class="fusion-board">
-                <div class="fpn-scales">
-                    <div class="scale-row" style="--i:1"><span>P2</span><i></i></div>
-                    <div class="scale-row" style="--i:2"><span>P3</span><i></i></div>
-                    <div class="scale-row" style="--i:3"><span>P4</span><i></i></div>
-                    <div class="scale-row" style="--i:4"><span>P5</span><i></i></div>
-                </div>
-                <div class="signal-line"></div>
-                <div class="mixer-node"><div><strong>&alpha;<sub>v</sub></strong><small>Scale mix</small></div></div>
-                <div class="voxel-field"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                <div class="route-line"></div>
-                <div class="gate-node"><div><strong>&sigma;</strong><small>Gate</small></div></div>
-            </div>
-            <div class="visual-caption"><span>2D appearance</span><span>3D geometry</span></div>
+        <div class="hero-visual">
+            <div class="visual-topline" aria-hidden="true"><span>Adaptive routing</span><span>Voxel / v</span></div>
+            <svg class="routing-diagram" viewBox="0 0 480 400" preserveAspectRatio="xMidYMid meet"
+                 role="img" aria-labelledby="rt-title rt-desc">
+                <title id="rt-title">Adaptive routing in AMGF3D</title>
+                <desc id="rt-desc">A voxel's own 3D feature predicts softmax weights over the four
+                FPN levels P2 to P5, whose sampled descriptors are mixed into a single appearance
+                vector. A gate conditioned jointly on that 3D feature and the mixed appearance
+                scales the residual update.</desc>
+                <defs>
+                    <marker id="rt-mk-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                        <path d="M0 0 L10 5 L0 10 Z" fill="#5cc8ff"></path>
+                    </marker>
+                    <marker id="rt-mk-violet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                        <path d="M0 0 L10 5 L0 10 Z" fill="#8d88ff"></path>
+                    </marker>
+                    <marker id="rt-mk-signal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                        <path d="M0 0 L10 5 L0 10 Z" fill="#65efbd"></path>
+                    </marker>
+                </defs>
+
+                <!-- ── 2D branch: P2 is the FINEST level, so it is the widest bar ── -->
+                <text class="rt-sec rt-t-cyan" x="24" y="24">2D &#183; FROZEN FPN</text>
+                <g class="rt-bar">
+                    <rect x="24" y="36"  width="152" height="24" rx="3"></rect>
+                    <rect x="24" y="68"  width="128" height="24" rx="3"></rect>
+                    <rect x="24" y="100" width="104" height="24" rx="3"></rect>
+                    <rect x="24" y="132" width="80"  height="24" rx="3"></rect>
+                </g>
+                <g class="rt-tick">
+                    <rect x="142" y="46"  width="26" height="4" rx="2"></rect>
+                    <rect x="124" y="78"  width="20" height="4" rx="2"></rect>
+                    <rect x="106" y="110" width="14" height="4" rx="2"></rect>
+                    <rect x="87"  y="142" width="9"  height="4" rx="2"></rect>
+                </g>
+                <g class="rt-lvl">
+                    <text x="36" y="52">P2</text>
+                    <text x="36" y="84">P3</text>
+                    <text x="36" y="116">P4</text>
+                    <text x="36" y="148">P5</text>
+                </g>
+                <text class="rt-note" x="24" y="172">WIDTH = MAP RESOLUTION &#183; P2 FINEST</text>
+
+                <!-- ── sampled descriptors flow into the per-voxel scale mixture ── -->
+                <g class="rt-edge rt-e-cyan">
+                    <path d="M176 48 L262 80"  marker-end="url(#rt-mk-cyan)"></path>
+                    <path d="M152 80 L264 88"  marker-end="url(#rt-mk-cyan)"></path>
+                    <path d="M128 112 L264 98" marker-end="url(#rt-mk-cyan)"></path>
+                    <path d="M104 144 L268 110" marker-end="url(#rt-mk-cyan)"></path>
+                </g>
+
+                <circle class="rt-node rt-n-mix" cx="300" cy="92" r="36"></circle>
+                <text class="rt-glyph rt-t-signal" x="300" y="92">&#945;<tspan class="rt-sub" dy="4">v</tspan></text>
+                <text class="rt-cap rt-t-signal" x="300" y="108">SCALE MIX</text>
+
+                <!-- ── 3D branch ── -->
+                <text class="rt-sec rt-t-violet" x="24" y="224">3D &#183; SPARSE VOXEL</text>
+                <g class="rt-vox">
+                    <rect x="34" y="236" width="14" height="14" rx="2"></rect>
+                    <rect x="60" y="230" width="14" height="14" rx="2"></rect>
+                    <rect x="86" y="242" width="14" height="14" rx="2"></rect>
+                    <rect x="44" y="264" width="14" height="14" rx="2"></rect>
+                    <rect x="96" y="270" width="14" height="14" rx="2"></rect>
+                    <rect x="38" y="290" width="14" height="14" rx="2"></rect>
+                    <rect x="64" y="284" width="14" height="14" rx="2"></rect>
+                    <rect x="92" y="296" width="14" height="14" rx="2"></rect>
+                </g>
+                <circle class="rt-vox-ring" cx="75" cy="265" r="16"></circle>
+                <rect class="rt-vox-cur" x="68" y="258" width="14" height="14" rx="2"></rect>
+                <text class="rt-lbl rt-t-violet" x="118" y="270">f<tspan class="rt-sub" dy="4">v</tspan></text>
+
+                <!-- ── the two conditioning edges: what makes the routing adaptive ── -->
+                <g class="rt-edge rt-e-violet rt-dash">
+                    <path d="M122 258 C178 238 226 176 276 124" marker-end="url(#rt-mk-violet)"></path>
+                    <path d="M126 288 C226 322 312 312 376 268" marker-end="url(#rt-mk-violet)"></path>
+                </g>
+                <text class="rt-note rt-t-violet" x="150" y="206">PREDICTS &#945;<tspan class="rt-sub" dy="3">v</tspan></text>
+                <text class="rt-note rt-t-violet" x="228" y="330">CONDITIONS THE GATE</text>
+
+                <!-- ── mixed appearance descriptor into the gate ── -->
+                <g class="rt-edge rt-e-signal">
+                    <path id="rt-path-zbar" d="M330 116 C358 152 376 186 388 216" marker-end="url(#rt-mk-signal)"></path>
+                </g>
+                <path class="rt-flow" d="M330 116 C358 152 376 186 388 216"></path>
+                <text class="rt-lbl rt-t-signal" x="356" y="178" text-anchor="end">z&#772;<tspan class="rt-sub" dy="4">v</tspan></text>
+
+                <circle class="rt-node rt-n-gate" cx="404" cy="248" r="30"></circle>
+                <text class="rt-glyph rt-t-coral" x="404" y="250">&#963;</text>
+                <text class="rt-cap rt-t-coral" x="404" y="264">GATE</text>
+
+                <line class="rt-rule" x1="24" y1="362" x2="456" y2="362"></line>
+                <text class="rt-eq" x="24" y="380">g = &#963;(w[f<tspan class="rt-sub" dy="3">v</tspan><tspan dy="-3"> ; z&#772;</tspan><tspan class="rt-sub" dy="3">v</tspan><tspan dy="-3">])   &#183;   f</tspan><tspan class="rt-sub" dy="3">out</tspan><tspan dy="-3"> = f</tspan><tspan class="rt-sub" dy="3">v</tspan><tspan dy="-3"> + &#955; g &#934;([f</tspan><tspan class="rt-sub" dy="3">v</tspan><tspan dy="-3"> ; z&#772;</tspan><tspan class="rt-sub" dy="3">v</tspan><tspan dy="-3">])</tspan></text>
+            </svg>
+            <div class="visual-caption" aria-hidden="true"><span>2D appearance</span><span>3D geometry</span></div>
         </div>
     </div>
     <div class="hero-metrics" role="list" aria-label="AMGF3D highlights">
@@ -480,6 +562,25 @@
                 <p>A voxel whose projected evidence disagrees with its geometry can therefore suppress that evidence, instead of receiving it unconditionally.</p>
             </div>
         </div>
+
+        <div class="routing-steps">
+            <div class="routing-step">
+                <div class="routing-step-tag rt-tag-cyan">01 &#183; Sample</div>
+                <p>Every active voxel centre is projected once and bilinearly sampled at <strong>all four</strong> FPN levels &mdash; P<sub>2</sub> finest through P<sub>5</sub> coarsest &mdash; rather than at one fixed level.</p>
+                <code>z<sub>v</sub><sup>(l)</sup> = sample(F<sup>(l)</sup>, u<sub>v</sub> / s<sub>l</sub>)</code>
+            </div>
+            <div class="routing-step">
+                <div class="routing-step-tag rt-tag-violet">02 &#183; Route</div>
+                <p>The voxel's <strong>own 3D feature</strong> predicts a softmax mixture over those four levels, so the effective descriptor resolution varies per voxel instead of being fixed by the architecture.</p>
+                <code>&alpha;<sub>v</sub> = softmax(W<sub>&alpha;</sub> ReLU(W<sub>&beta;</sub> f<sub>v</sub>))</code>
+            </div>
+            <div class="routing-step">
+                <div class="routing-step-tag rt-tag-coral">03 &#183; Gate</div>
+                <p>A scalar gate on the <strong>joint</strong> geometry&ndash;appearance pair scales the residual, so appearance the local geometry contradicts can be damped before it enters the 3D stream.</p>
+                <code>g<sub>v</sub> = &sigma;(w<sub>g</sub><sup>T</sup>[f<sub>v</sub> ; z&#772;<sub>v</sub>] + b<sub>g</sub>)</code>
+            </div>
+        </div>
+        <p class="arch-caption">The update is a scaled residual, <code class="inline-eq">f<sub>v</sub><sup>out</sup> = f<sub>v</sub> + &lambda; &#183; g<sub>v</sub> &#183; &Phi;([f<sub>v</sub> ; z&#772;<sub>v</sub>])</code> with &lambda; = 0.1, applied at an early (s&nbsp;=&nbsp;1) and a later (s&nbsp;=&nbsp;3) backbone stage.</p>
     </div>
 </section>
 
@@ -665,6 +766,10 @@
     <div class="container">
         <h2 class="section-title">Citation</h2>
         <p class="section-subtitle">If you find this work useful, please cite:</p>
+        <a class="teaser-card" href="assets/teaser.png" target="_blank" rel="noopener noreferrer">
+            <img src="assets/teaser.png" alt="AMGF3D summary card: the 2D and 3D branches, the AMGF module at backbone layers 1 and 3, and a representative indoor detection result." loading="lazy">
+            <span>Summary card &mdash; open full size &nearr;</span>
+        </a>
         <div class="bibtex-block"><button class="copy-btn" onclick="copyBibtex()">Copy</button><span class="key">@inproceedings</span>{<span class="value">ahmed2026amgf3d</span>,
   <span class="field">title</span>     = {AMGF3D: Adaptive Multi-scale Gated Fusion for Robust Indoor RGB-D 3D Object Detection},
   <span class="field">author</span>    = {Ahmed, Faisal and Quarles, John and Desai, Kevin},
